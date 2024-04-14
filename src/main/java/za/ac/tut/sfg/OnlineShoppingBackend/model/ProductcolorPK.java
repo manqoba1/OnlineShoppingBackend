@@ -21,14 +21,14 @@ public class ProductcolorPK implements Serializable {
     private int id;
     @Basic(optional = false)
     @Column(name = "product_id")
-    private int productId1;
+    private int productId;
 
     public ProductcolorPK() {
     }
 
-    public ProductcolorPK(int id, int productId1) {
+    public ProductcolorPK(int id, int productId) {
         this.id = id;
-        this.productId1 = productId1;
+        this.productId = productId;
     }
 
     public int getId() {
@@ -39,19 +39,19 @@ public class ProductcolorPK implements Serializable {
         this.id = id;
     }
 
-    public int getProductId1() {
-        return productId1;
+    public int getProductId() {
+        return productId;
     }
 
-    public void setProductId1(int productId1) {
-        this.productId1 = productId1;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (int) id;
-        hash += (int) productId1;
+        hash += (int) productId;
         return hash;
     }
 
@@ -65,7 +65,7 @@ public class ProductcolorPK implements Serializable {
         if (this.id != other.id) {
             return false;
         }
-        if (this.productId1 != other.productId1) {
+        if (this.productId != other.productId) {
             return false;
         }
         return true;
@@ -73,7 +73,7 @@ public class ProductcolorPK implements Serializable {
 
     @Override
     public String toString() {
-        return "za.ac.tut.sfg.OnlineShoppingBackend.model.ProductcolorPK[ id=" + id + ", productId1=" + productId1 + " ]";
+        return "za.ac.tut.sfg.OnlineShoppingBackend.model.ProductcolorPK[ id=" + id + ", productId=" + productId + " ]";
     }
     
 }

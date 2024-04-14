@@ -5,7 +5,6 @@
 package za.ac.tut.sfg.OnlineShoppingBackend.model;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -14,10 +13,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  *
@@ -26,31 +23,21 @@ import java.util.List;
 @Entity
 @Table(name = "shopcart")
 @NamedQueries({
-    @NamedQuery(name = "Shopcart.findAll", query = "SELECT s FROM Shopcart s"),
-    @NamedQuery(name = "Shopcart.findById", query = "SELECT s FROM Shopcart s WHERE s.shopcartPK.id = :id"),
-    @NamedQuery(name = "Shopcart.findByStylistId", query = "SELECT s FROM Shopcart s WHERE s.stylistId = :stylistId"),
-    @NamedQuery(name = "Shopcart.findByCustomerId", query = "SELECT s FROM Shopcart s WHERE s.customerId = :customerId"),
-    @NamedQuery(name = "Shopcart.findByTotalAmout", query = "SELECT s FROM Shopcart s WHERE s.totalAmout = :totalAmout"),
-    @NamedQuery(name = "Shopcart.findByTotalCartItems", query = "SELECT s FROM Shopcart s WHERE s.totalCartItems = :totalCartItems"),
-    @NamedQuery(name = "Shopcart.findByUserId", query = "SELECT s FROM Shopcart s WHERE s.shopcartPK.userId = :userId")})
+    @NamedQuery(name = "Shopcart.findAll", query = "SELECT s FROM Shopcart s")})
 public class Shopcart implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected ShopcartPK shopcartPK;
-    @Column(name = "stylistId")
-    private Integer stylistId;
-    @Basic(optional = false)
-    @Column(name = "customerId")
-    private int customerId;
     @Basic(optional = false)
     @Column(name = "TotalAmout")
     private long totalAmout;
     @Basic(optional = false)
     @Column(name = "totalCartItems")
     private int totalCartItems;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shopcartId", fetch = FetchType.LAZY)
-    private List<Shopcartitem> shopcartitemList;
+    @JoinColumn(name = "stylist_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Stylist stylist;
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
@@ -62,9 +49,8 @@ public class Shopcart implements Serializable {
         this.shopcartPK = shopcartPK;
     }
 
-    public Shopcart(ShopcartPK shopcartPK, int customerId, long totalAmout, int totalCartItems) {
+    public Shopcart(ShopcartPK shopcartPK, long totalAmout, int totalCartItems) {
         this.shopcartPK = shopcartPK;
-        this.customerId = customerId;
         this.totalAmout = totalAmout;
         this.totalCartItems = totalCartItems;
     }
@@ -79,22 +65,6 @@ public class Shopcart implements Serializable {
 
     public void setShopcartPK(ShopcartPK shopcartPK) {
         this.shopcartPK = shopcartPK;
-    }
-
-    public Integer getStylistId() {
-        return stylistId;
-    }
-
-    public void setStylistId(Integer stylistId) {
-        this.stylistId = stylistId;
-    }
-
-    public int getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
     }
 
     public long getTotalAmout() {
@@ -113,12 +83,12 @@ public class Shopcart implements Serializable {
         this.totalCartItems = totalCartItems;
     }
 
-    public List<Shopcartitem> getShopcartitemList() {
-        return shopcartitemList;
+    public Stylist getStylist() {
+        return stylist;
     }
 
-    public void setShopcartitemList(List<Shopcartitem> shopcartitemList) {
-        this.shopcartitemList = shopcartitemList;
+    public void setStylist(Stylist stylist) {
+        this.stylist = stylist;
     }
 
     public User getUser() {

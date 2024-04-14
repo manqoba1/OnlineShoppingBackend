@@ -25,12 +25,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "shopcartitem")
 @NamedQueries({
-    @NamedQuery(name = "Shopcartitem.findAll", query = "SELECT s FROM Shopcartitem s"),
-    @NamedQuery(name = "Shopcartitem.findById", query = "SELECT s FROM Shopcartitem s WHERE s.shopcartitemPK.id = :id"),
-    @NamedQuery(name = "Shopcartitem.findByProductcolorId", query = "SELECT s FROM Shopcartitem s WHERE s.shopcartitemPK.productcolorId = :productcolorId"),
-    @NamedQuery(name = "Shopcartitem.findByProductcolorProductId", query = "SELECT s FROM Shopcartitem s WHERE s.shopcartitemPK.productcolorProductId = :productcolorProductId"),
-    @NamedQuery(name = "Shopcartitem.findByProductsizeId", query = "SELECT s FROM Shopcartitem s WHERE s.shopcartitemPK.productsizeId = :productsizeId"),
-    @NamedQuery(name = "Shopcartitem.findByProductsizeProductId", query = "SELECT s FROM Shopcartitem s WHERE s.shopcartitemPK.productsizeProductId = :productsizeProductId")})
+    @NamedQuery(name = "Shopcartitem.findAll", query = "SELECT s FROM Shopcartitem s")})
 public class Shopcartitem implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,7 +37,7 @@ public class Shopcartitem implements Serializable {
     private String quantity;
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Product productId;
+    private Product product;
     @JoinColumns({
         @JoinColumn(name = "productcolor_id", referencedColumnName = "id", insertable = false, updatable = false),
         @JoinColumn(name = "productcolor_product_id", referencedColumnName = "product_id", insertable = false, updatable = false)})
@@ -53,9 +48,6 @@ public class Shopcartitem implements Serializable {
         @JoinColumn(name = "productsize_product_id", referencedColumnName = "product_id", insertable = false, updatable = false)})
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Productsize productsize;
-    @JoinColumn(name = "shopcart_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Shopcart shopcartId;
 
     public Shopcartitem() {
     }
@@ -89,12 +81,12 @@ public class Shopcartitem implements Serializable {
         this.quantity = quantity;
     }
 
-    public Product getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Product productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Productcolor getProductcolor() {
@@ -111,14 +103,6 @@ public class Shopcartitem implements Serializable {
 
     public void setProductsize(Productsize productsize) {
         this.productsize = productsize;
-    }
-
-    public Shopcart getShopcartId() {
-        return shopcartId;
-    }
-
-    public void setShopcartId(Shopcart shopcartId) {
-        this.shopcartId = shopcartId;
     }
 
     @Override

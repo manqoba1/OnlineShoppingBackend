@@ -23,12 +23,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "productimage")
 @NamedQueries({
-    @NamedQuery(name = "Productimage.findAll", query = "SELECT p FROM Productimage p"),
-    @NamedQuery(name = "Productimage.findById", query = "SELECT p FROM Productimage p WHERE p.productimagePK.id = :id"),
-    @NamedQuery(name = "Productimage.findByName", query = "SELECT p FROM Productimage p WHERE p.name = :name"),
-    @NamedQuery(name = "Productimage.findByUrlFull", query = "SELECT p FROM Productimage p WHERE p.urlFull = :urlFull"),
-    @NamedQuery(name = "Productimage.findByUrlThump", query = "SELECT p FROM Productimage p WHERE p.urlThump = :urlThump"),
-    @NamedQuery(name = "Productimage.findByProductId", query = "SELECT p FROM Productimage p WHERE p.productimagePK.productId = :productId")})
+    @NamedQuery(name = "Productimage.findAll", query = "SELECT p FROM Productimage p")})
 public class Productimage implements Serializable {
 
     private static final long serialVersionUID = 1L;

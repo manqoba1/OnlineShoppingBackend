@@ -30,15 +30,7 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @NamedQueries({
-    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
-    @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
-    @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name"),
-    @NamedQuery(name = "User.findBySurname", query = "SELECT u FROM User u WHERE u.surname = :surname"),
-    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
-    @NamedQuery(name = "User.findByCell", query = "SELECT u FROM User u WHERE u.cell = :cell"),
-    @NamedQuery(name = "User.findByDob", query = "SELECT u FROM User u WHERE u.dob = :dob"),
-    @NamedQuery(name = "User.findByImageUrl", query = "SELECT u FROM User u WHERE u.imageUrl = :imageUrl"),
-    @NamedQuery(name = "User.findByUserRoleID", query = "SELECT u FROM User u WHERE u.userRoleID = :userRoleID")})
+    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")})
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -67,16 +59,21 @@ public class User implements Serializable {
     @Column(name = "image_url")
     private String imageUrl;
     @Basic(optional = false)
-    @Column(name = "userRoleID")
-    private int userRoleID;
-    @Basic(optional = false)
     @Lob
     @Column(name = "password")
     private String password;
-    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
-    private List<Product> productList;
+    @Column(name = "user_uid")
+    private String userUid;
+    @Column(name = "active_status")
+    private String activeStatus;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Chatlist> chatlistList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Address> addressList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private List<Shopcart> shopcartList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Chat> chatList;
 
     public User() {
     }
@@ -85,7 +82,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Integer id, String name, String surname, String email, String cell, Date dob, String imageUrl, int userRoleID, String password) {
+    public User(Integer id, String name, String surname, String email, String cell, Date dob, String imageUrl, String password) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -93,7 +90,6 @@ public class User implements Serializable {
         this.cell = cell;
         this.dob = dob;
         this.imageUrl = imageUrl;
-        this.userRoleID = userRoleID;
         this.password = password;
     }
 
@@ -153,14 +149,6 @@ public class User implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    public int getUserRoleID() {
-        return userRoleID;
-    }
-
-    public void setUserRoleID(int userRoleID) {
-        this.userRoleID = userRoleID;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -169,12 +157,36 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public List<Product> getProductList() {
-        return productList;
+    public String getUserUid() {
+        return userUid;
     }
 
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
+    }
+
+    public String getActiveStatus() {
+        return activeStatus;
+    }
+
+    public void setActiveStatus(String activeStatus) {
+        this.activeStatus = activeStatus;
+    }
+
+    public List<Chatlist> getChatlistList() {
+        return chatlistList;
+    }
+
+    public void setChatlistList(List<Chatlist> chatlistList) {
+        this.chatlistList = chatlistList;
+    }
+
+    public List<Address> getAddressList() {
+        return addressList;
+    }
+
+    public void setAddressList(List<Address> addressList) {
+        this.addressList = addressList;
     }
 
     public List<Shopcart> getShopcartList() {
@@ -183,6 +195,14 @@ public class User implements Serializable {
 
     public void setShopcartList(List<Shopcart> shopcartList) {
         this.shopcartList = shopcartList;
+    }
+
+    public List<Chat> getChatList() {
+        return chatList;
+    }
+
+    public void setChatList(List<Chat> chatList) {
+        this.chatList = chatList;
     }
 
     @Override

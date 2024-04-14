@@ -6,11 +6,12 @@ package za.ac.tut.sfg.OnlineShoppingBackend.model;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
@@ -23,49 +24,46 @@ import java.io.Serializable;
 @Entity
 @Table(name = "stylistshopcartitem")
 @NamedQueries({
-    @NamedQuery(name = "Stylistshopcartitem.findAll", query = "SELECT s FROM Stylistshopcartitem s"),
-    @NamedQuery(name = "Stylistshopcartitem.findById", query = "SELECT s FROM Stylistshopcartitem s WHERE s.id = :id"),
-    @NamedQuery(name = "Stylistshopcartitem.findByShopcartitemId", query = "SELECT s FROM Stylistshopcartitem s WHERE s.shopcartitemId = :shopcartitemId"),
-    @NamedQuery(name = "Stylistshopcartitem.findByStylistId", query = "SELECT s FROM Stylistshopcartitem s WHERE s.stylistId = :stylistId")})
+    @NamedQuery(name = "Stylistshopcartitem.findAll", query = "SELECT s FROM Stylistshopcartitem s")})
 public class Stylistshopcartitem implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
+    @EmbeddedId
+    protected StylistshopcartitemPK stylistshopcartitemPK;
     @Basic(optional = false)
     @Column(name = "shopcartitemId")
     private int shopcartitemId;
     @Basic(optional = false)
-    @Column(name = "stylistId")
-    private int stylistId;
-    @Basic(optional = false)
     @Lob
     @Column(name = "comments")
     private String comments;
+    @JoinColumn(name = "stylist_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private Stylist stylist;
 
     public Stylistshopcartitem() {
     }
 
-    public Stylistshopcartitem(Integer id) {
-        this.id = id;
+    public Stylistshopcartitem(StylistshopcartitemPK stylistshopcartitemPK) {
+        this.stylistshopcartitemPK = stylistshopcartitemPK;
     }
 
-    public Stylistshopcartitem(Integer id, int shopcartitemId, int stylistId, String comments) {
-        this.id = id;
+    public Stylistshopcartitem(StylistshopcartitemPK stylistshopcartitemPK, int shopcartitemId, String comments) {
+        this.stylistshopcartitemPK = stylistshopcartitemPK;
         this.shopcartitemId = shopcartitemId;
-        this.stylistId = stylistId;
         this.comments = comments;
     }
 
-    public Integer getId() {
-        return id;
+    public Stylistshopcartitem(int id, int stylistId) {
+        this.stylistshopcartitemPK = new StylistshopcartitemPK(id, stylistId);
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public StylistshopcartitemPK getStylistshopcartitemPK() {
+        return stylistshopcartitemPK;
+    }
+
+    public void setStylistshopcartitemPK(StylistshopcartitemPK stylistshopcartitemPK) {
+        this.stylistshopcartitemPK = stylistshopcartitemPK;
     }
 
     public int getShopcartitemId() {
@@ -76,14 +74,6 @@ public class Stylistshopcartitem implements Serializable {
         this.shopcartitemId = shopcartitemId;
     }
 
-    public int getStylistId() {
-        return stylistId;
-    }
-
-    public void setStylistId(int stylistId) {
-        this.stylistId = stylistId;
-    }
-
     public String getComments() {
         return comments;
     }
@@ -92,10 +82,18 @@ public class Stylistshopcartitem implements Serializable {
         this.comments = comments;
     }
 
+    public Stylist getStylist() {
+        return stylist;
+    }
+
+    public void setStylist(Stylist stylist) {
+        this.stylist = stylist;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (stylistshopcartitemPK != null ? stylistshopcartitemPK.hashCode() : 0);
         return hash;
     }
 
@@ -106,7 +104,7 @@ public class Stylistshopcartitem implements Serializable {
             return false;
         }
         Stylistshopcartitem other = (Stylistshopcartitem) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.stylistshopcartitemPK == null && other.stylistshopcartitemPK != null) || (this.stylistshopcartitemPK != null && !this.stylistshopcartitemPK.equals(other.stylistshopcartitemPK))) {
             return false;
         }
         return true;
@@ -114,7 +112,7 @@ public class Stylistshopcartitem implements Serializable {
 
     @Override
     public String toString() {
-        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Stylistshopcartitem[ id=" + id + " ]";
+        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Stylistshopcartitem[ stylistshopcartitemPK=" + stylistshopcartitemPK + " ]";
     }
     
 }

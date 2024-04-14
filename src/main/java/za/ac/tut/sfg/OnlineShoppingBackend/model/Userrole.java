@@ -22,10 +22,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "userrole")
 @NamedQueries({
-    @NamedQuery(name = "Userrole.findAll", query = "SELECT u FROM Userrole u"),
-    @NamedQuery(name = "Userrole.findById", query = "SELECT u FROM Userrole u WHERE u.id = :id"),
-    @NamedQuery(name = "Userrole.findByName", query = "SELECT u FROM Userrole u WHERE u.name = :name"),
-    @NamedQuery(name = "Userrole.findByStatus", query = "SELECT u FROM Userrole u WHERE u.status = :status")})
+    @NamedQuery(name = "Userrole.findAll", query = "SELECT u FROM Userrole u")})
 public class Userrole implements Serializable {
 
     private static final long serialVersionUID = 1L;

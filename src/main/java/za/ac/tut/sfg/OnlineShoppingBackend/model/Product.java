@@ -12,9 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -29,12 +27,7 @@ import java.util.List;
 @Entity
 @Table(name = "product")
 @NamedQueries({
-    @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p"),
-    @NamedQuery(name = "Product.findById", query = "SELECT p FROM Product p WHERE p.id = :id"),
-    @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name"),
-    @NamedQuery(name = "Product.findBySkuCode", query = "SELECT p FROM Product p WHERE p.skuCode = :skuCode"),
-    @NamedQuery(name = "Product.findByPrice", query = "SELECT p FROM Product p WHERE p.price = :price"),
-    @NamedQuery(name = "Product.findByVat", query = "SELECT p FROM Product p WHERE p.vat = :vat")})
+    @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p")})
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -59,17 +52,14 @@ public class Product implements Serializable {
     @Basic(optional = false)
     @Column(name = "vat")
     private double vat;
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User userId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
     private List<Shopcartitem> shopcartitemList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
+    private List<Productimage> productimageList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
     private List<Productsize> productsizeList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
     private List<Productcolor> productcolorList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
-    private List<Productimage> productimageList;
 
     public Product() {
     }
@@ -135,20 +125,20 @@ public class Product implements Serializable {
         this.vat = vat;
     }
 
-    public User getUserId() {
-        return userId;
-    }
-
-    public void setUserId(User userId) {
-        this.userId = userId;
-    }
-
     public List<Shopcartitem> getShopcartitemList() {
         return shopcartitemList;
     }
 
     public void setShopcartitemList(List<Shopcartitem> shopcartitemList) {
         this.shopcartitemList = shopcartitemList;
+    }
+
+    public List<Productimage> getProductimageList() {
+        return productimageList;
+    }
+
+    public void setProductimageList(List<Productimage> productimageList) {
+        this.productimageList = productimageList;
     }
 
     public List<Productsize> getProductsizeList() {
@@ -165,14 +155,6 @@ public class Product implements Serializable {
 
     public void setProductcolorList(List<Productcolor> productcolorList) {
         this.productcolorList = productcolorList;
-    }
-
-    public List<Productimage> getProductimageList() {
-        return productimageList;
-    }
-
-    public void setProductimageList(List<Productimage> productimageList) {
-        this.productimageList = productimageList;
     }
 
     @Override

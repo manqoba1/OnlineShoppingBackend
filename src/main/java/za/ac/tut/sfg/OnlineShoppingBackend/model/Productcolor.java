@@ -26,19 +26,12 @@ import java.util.List;
 @Entity
 @Table(name = "productcolor")
 @NamedQueries({
-    @NamedQuery(name = "Productcolor.findAll", query = "SELECT p FROM Productcolor p"),
-    @NamedQuery(name = "Productcolor.findById", query = "SELECT p FROM Productcolor p WHERE p.productcolorPK.id = :id"),
-    @NamedQuery(name = "Productcolor.findByProductId", query = "SELECT p FROM Productcolor p WHERE p.productId = :productId"),
-    @NamedQuery(name = "Productcolor.findByName", query = "SELECT p FROM Productcolor p WHERE p.name = :name"),
-    @NamedQuery(name = "Productcolor.findByProductId1", query = "SELECT p FROM Productcolor p WHERE p.productcolorPK.productId1 = :productId1")})
+    @NamedQuery(name = "Productcolor.findAll", query = "SELECT p FROM Productcolor p")})
 public class Productcolor implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected ProductcolorPK productcolorPK;
-    @Basic(optional = false)
-    @Column(name = "productId")
-    private int productId;
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
@@ -55,14 +48,13 @@ public class Productcolor implements Serializable {
         this.productcolorPK = productcolorPK;
     }
 
-    public Productcolor(ProductcolorPK productcolorPK, int productId, String name) {
+    public Productcolor(ProductcolorPK productcolorPK, String name) {
         this.productcolorPK = productcolorPK;
-        this.productId = productId;
         this.name = name;
     }
 
-    public Productcolor(int id, int productId1) {
-        this.productcolorPK = new ProductcolorPK(id, productId1);
+    public Productcolor(int id, int productId) {
+        this.productcolorPK = new ProductcolorPK(id, productId);
     }
 
     public ProductcolorPK getProductcolorPK() {
@@ -71,14 +63,6 @@ public class Productcolor implements Serializable {
 
     public void setProductcolorPK(ProductcolorPK productcolorPK) {
         this.productcolorPK = productcolorPK;
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
     }
 
     public String getName() {

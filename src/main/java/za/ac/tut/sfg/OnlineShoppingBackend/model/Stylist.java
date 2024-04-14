@@ -5,19 +5,23 @@
 package za.ac.tut.sfg.OnlineShoppingBackend.model;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -26,15 +30,7 @@ import java.util.Date;
 @Entity
 @Table(name = "stylist")
 @NamedQueries({
-    @NamedQuery(name = "Stylist.findAll", query = "SELECT s FROM Stylist s"),
-    @NamedQuery(name = "Stylist.findById", query = "SELECT s FROM Stylist s WHERE s.id = :id"),
-    @NamedQuery(name = "Stylist.findByName", query = "SELECT s FROM Stylist s WHERE s.name = :name"),
-    @NamedQuery(name = "Stylist.findBySurname", query = "SELECT s FROM Stylist s WHERE s.surname = :surname"),
-    @NamedQuery(name = "Stylist.findByEmail", query = "SELECT s FROM Stylist s WHERE s.email = :email"),
-    @NamedQuery(name = "Stylist.findByCell", query = "SELECT s FROM Stylist s WHERE s.cell = :cell"),
-    @NamedQuery(name = "Stylist.findByDob", query = "SELECT s FROM Stylist s WHERE s.dob = :dob"),
-    @NamedQuery(name = "Stylist.findByImageUrl", query = "SELECT s FROM Stylist s WHERE s.imageUrl = :imageUrl"),
-    @NamedQuery(name = "Stylist.findByStylistUid", query = "SELECT s FROM Stylist s WHERE s.stylistUid = :stylistUid")})
+    @NamedQuery(name = "Stylist.findAll", query = "SELECT s FROM Stylist s")})
 public class Stylist implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -68,6 +64,18 @@ public class Stylist implements Serializable {
     private String password;
     @Column(name = "stylist_uid")
     private String stylistUid;
+    @Column(name = "active_status")
+    private String activeStatus;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stylist", fetch = FetchType.LAZY)
+    private List<Chatlist> chatlistList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stylist", fetch = FetchType.LAZY)
+    private List<Address> addressList;
+    @OneToMany(mappedBy = "stylist", fetch = FetchType.LAZY)
+    private List<Shopcart> shopcartList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stylist", fetch = FetchType.LAZY)
+    private List<Chat> chatList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stylist", fetch = FetchType.LAZY)
+    private List<Stylistshopcartitem> stylistshopcartitemList;
 
     public Stylist() {
     }
@@ -157,6 +165,54 @@ public class Stylist implements Serializable {
 
     public void setStylistUid(String stylistUid) {
         this.stylistUid = stylistUid;
+    }
+
+    public String getActiveStatus() {
+        return activeStatus;
+    }
+
+    public void setActiveStatus(String activeStatus) {
+        this.activeStatus = activeStatus;
+    }
+
+    public List<Chatlist> getChatlistList() {
+        return chatlistList;
+    }
+
+    public void setChatlistList(List<Chatlist> chatlistList) {
+        this.chatlistList = chatlistList;
+    }
+
+    public List<Address> getAddressList() {
+        return addressList;
+    }
+
+    public void setAddressList(List<Address> addressList) {
+        this.addressList = addressList;
+    }
+
+    public List<Shopcart> getShopcartList() {
+        return shopcartList;
+    }
+
+    public void setShopcartList(List<Shopcart> shopcartList) {
+        this.shopcartList = shopcartList;
+    }
+
+    public List<Chat> getChatList() {
+        return chatList;
+    }
+
+    public void setChatList(List<Chat> chatList) {
+        this.chatList = chatList;
+    }
+
+    public List<Stylistshopcartitem> getStylistshopcartitemList() {
+        return stylistshopcartitemList;
+    }
+
+    public void setStylistshopcartitemList(List<Stylistshopcartitem> stylistshopcartitemList) {
+        this.stylistshopcartitemList = stylistshopcartitemList;
     }
 
     @Override

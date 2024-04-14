@@ -26,12 +26,7 @@ import java.util.List;
 @Entity
 @Table(name = "productsize")
 @NamedQueries({
-    @NamedQuery(name = "Productsize.findAll", query = "SELECT p FROM Productsize p"),
-    @NamedQuery(name = "Productsize.findById", query = "SELECT p FROM Productsize p WHERE p.productsizePK.id = :id"),
-    @NamedQuery(name = "Productsize.findBySizeType", query = "SELECT p FROM Productsize p WHERE p.sizeType = :sizeType"),
-    @NamedQuery(name = "Productsize.findBySize", query = "SELECT p FROM Productsize p WHERE p.size = :size"),
-    @NamedQuery(name = "Productsize.findBySizeCode", query = "SELECT p FROM Productsize p WHERE p.sizeCode = :sizeCode"),
-    @NamedQuery(name = "Productsize.findByProductId", query = "SELECT p FROM Productsize p WHERE p.productsizePK.productId = :productId")})
+    @NamedQuery(name = "Productsize.findAll", query = "SELECT p FROM Productsize p")})
 public class Productsize implements Serializable {
 
     private static final long serialVersionUID = 1L;
