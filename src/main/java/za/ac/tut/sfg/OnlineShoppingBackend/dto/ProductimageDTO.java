@@ -20,7 +20,7 @@ public class ProductImageDTO implements Serializable {
     private String urlFull;
     private String urlThump;
     private ProductDTO product;
-
+ 
     public ProductImageDTO() {
     }
 

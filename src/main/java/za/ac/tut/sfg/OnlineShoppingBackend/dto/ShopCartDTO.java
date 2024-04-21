@@ -7,7 +7,7 @@ package za.ac.tut.sfg.OnlineShoppingBackend.dto;
 import za.ac.tut.sfg.OnlineShoppingBackend.model.*;
 import za.ac.tut.sfg.OnlineShoppingBackend.dto.*;
 import java.io.Serializable;
-import java.util.List;
+import java.util.List; 
 
 /**
  *
