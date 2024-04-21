@@ -5,9 +5,12 @@
 package za.ac.tut.sfg.OnlineShoppingBackend.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
-import za.ac.tut.sfg.OnlineShoppingBackend.model.Stylist;
+import za.ac.tut.sfg.OnlineShoppingBackend.dto.UserDTO;
+import za.ac.tut.sfg.OnlineShoppingBackend.dto.UserRoleDTO;
+import za.ac.tut.sfg.OnlineShoppingBackend.dto.transfer.ResponseDTO;
 import za.ac.tut.sfg.OnlineShoppingBackend.model.User;
 
 /**
@@ -16,25 +19,17 @@ import za.ac.tut.sfg.OnlineShoppingBackend.model.User;
  */
 public interface UserStylistService {
 
-    Optional<User> loginUser(String email, String password);
-    Optional<Stylist> loginStylist(String email, String password);
+    UserDTO loginUser(String email, String password) throws NoSuchElementException;
 
-    Optional<User> createUser(User user);
+    UserDTO createUser(UserDTO user);
 
-    Optional<Stylist> createStylist(Stylist stylist);
+    UserDTO getUserById(Integer userId);
 
-    Optional<?> getStylistById(Integer stylistId);
+    UserRoleDTO getUserRole(Integer userRoleId);
 
-    Optional<?> getUserById(Integer userId);
+    UserDTO getUserByUid(String userUid);
 
-    Optional<?> getStylistByUid(String stylistUid);
+    List<UserDTO> getActiveStylist(String activeStatus, int userroleId);
 
-    Optional<?> getUserByUid(String userUid);
-
-    Optional<List<Stylist>> getActiveStylist(String status);
-
-    Optional<User> updateUser(User user);
-
-    Optional<Stylist> updateStylist(Stylist stylist);
-
+    UserDTO updateUser(UserDTO user);
 }

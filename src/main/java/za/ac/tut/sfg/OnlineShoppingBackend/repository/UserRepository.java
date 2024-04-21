@@ -4,6 +4,7 @@
  */
 package za.ac.tut.sfg.OnlineShoppingBackend.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +27,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.userUid=?1")
     Optional<User> getUserByUid(String userUid);
 
+    @Query("SELECT u FROM User u WHERE u.activeStatus = :activeStatus AND u.userroleId.id = :userroleId") //1=online 2=ofline
+    Optional<List<User>> findStylistByActiveStatus(String activeStatus, int userroleId);
 }

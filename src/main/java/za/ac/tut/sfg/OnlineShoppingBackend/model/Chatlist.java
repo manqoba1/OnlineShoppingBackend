@@ -7,16 +7,13 @@ package za.ac.tut.sfg.OnlineShoppingBackend.model;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -25,7 +22,11 @@ import java.io.Serializable;
 @Entity
 @Table(name = "chatlist")
 @NamedQueries({
-    @NamedQuery(name = "Chatlist.findAll", query = "SELECT c FROM Chatlist c")})
+    @NamedQuery(name = "Chatlist.findAll", query = "SELECT c FROM Chatlist c"),
+    @NamedQuery(name = "Chatlist.findBySenderUid", query = "SELECT c FROM Chatlist c WHERE c.senderUid = :senderUid"),
+    @NamedQuery(name = "Chatlist.findByReceiverUid", query = "SELECT c FROM Chatlist c WHERE c.receiverUid = :receiverUid"),
+    @NamedQuery(name = "Chatlist.findByStatus", query = "SELECT c FROM Chatlist c WHERE c.status = :status"),
+    @NamedQuery(name = "Chatlist.findById", query = "SELECT c FROM Chatlist c WHERE c.id = :id")})
 public class Chatlist implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -38,26 +39,23 @@ public class Chatlist implements Serializable {
     @Column(name = "status")
     private String status;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "chatListId")
-    private Integer chatListId;
-    @JoinColumn(name = "stylist_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Stylist stylist;
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User user;
+    @Column(name = "id")
+    private Integer id;
+    @OneToMany(mappedBy = "chatListid")
+    private List<Chat> chatList;
+    @OneToMany(mappedBy = "chatListchatListId")
+    private List<ChatlistHasUser> chatlistHasUserList;
 
     public Chatlist() {
     }
 
-    public Chatlist(Integer chatListId) {
-        this.chatListId = chatListId;
+    public Chatlist(Integer id) {
+        this.id = id;
     }
 
-    public Chatlist(Integer chatListId, String senderUid, String receiverUid) {
-        this.chatListId = chatListId;
+    public Chatlist(Integer id, String senderUid, String receiverUid) {
+        this.id = id;
         this.senderUid = senderUid;
         this.receiverUid = receiverUid;
     }
@@ -86,34 +84,34 @@ public class Chatlist implements Serializable {
         this.status = status;
     }
 
-    public Integer getChatListId() {
-        return chatListId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setChatListId(Integer chatListId) {
-        this.chatListId = chatListId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Stylist getStylist() {
-        return stylist;
+    public List<Chat> getChatList() {
+        return chatList;
     }
 
-    public void setStylist(Stylist stylist) {
-        this.stylist = stylist;
+    public void setChatList(List<Chat> chatList) {
+        this.chatList = chatList;
     }
 
-    public User getUser() {
-        return user;
+    public List<ChatlistHasUser> getChatlistHasUserList() {
+        return chatlistHasUserList;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setChatlistHasUserList(List<ChatlistHasUser> chatlistHasUserList) {
+        this.chatlistHasUserList = chatlistHasUserList;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (chatListId != null ? chatListId.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -124,7 +122,7 @@ public class Chatlist implements Serializable {
             return false;
         }
         Chatlist other = (Chatlist) object;
-        if ((this.chatListId == null && other.chatListId != null) || (this.chatListId != null && !this.chatListId.equals(other.chatListId))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -132,7 +130,7 @@ public class Chatlist implements Serializable {
 
     @Override
     public String toString() {
-        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Chatlist[ chatListId=" + chatListId + " ]";
+        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Chatlist[ id=" + id + " ]";
     }
     
 }

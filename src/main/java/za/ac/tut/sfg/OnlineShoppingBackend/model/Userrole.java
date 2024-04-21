@@ -5,6 +5,7 @@
 package za.ac.tut.sfg.OnlineShoppingBackend.model;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,8 +13,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -22,7 +25,10 @@ import java.io.Serializable;
 @Entity
 @Table(name = "userrole")
 @NamedQueries({
-    @NamedQuery(name = "Userrole.findAll", query = "SELECT u FROM Userrole u")})
+    @NamedQuery(name = "Userrole.findAll", query = "SELECT u FROM Userrole u"),
+    @NamedQuery(name = "Userrole.findById", query = "SELECT u FROM Userrole u WHERE u.id = :id"),
+    @NamedQuery(name = "Userrole.findByName", query = "SELECT u FROM Userrole u WHERE u.name = :name"),
+    @NamedQuery(name = "Userrole.findByStatus", query = "SELECT u FROM Userrole u WHERE u.status = :status")})
 public class Userrole implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,6 +43,8 @@ public class Userrole implements Serializable {
     @Basic(optional = false)
     @Column(name = "status")
     private short status;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userroleId")
+    private List<User> userList;
 
     public Userrole() {
     }
@@ -73,6 +81,14 @@ public class Userrole implements Serializable {
 
     public void setStatus(short status) {
         this.status = status;
+    }
+
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
     }
 
     @Override

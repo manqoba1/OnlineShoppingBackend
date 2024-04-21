@@ -4,20 +4,21 @@
  */
 package za.ac.tut.sfg.OnlineShoppingBackend.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import za.ac.tut.sfg.OnlineShoppingBackend.dto.UserDTO;
+import za.ac.tut.sfg.OnlineShoppingBackend.dto.UserRoleDTO;
 import za.ac.tut.sfg.OnlineShoppingBackend.exceptions.UserException;
-import za.ac.tut.sfg.OnlineShoppingBackend.model.Stylist;
 import za.ac.tut.sfg.OnlineShoppingBackend.model.User;
-import za.ac.tut.sfg.OnlineShoppingBackend.repository.StylistRepository;
 import za.ac.tut.sfg.OnlineShoppingBackend.repository.UserRepository;
+import za.ac.tut.sfg.OnlineShoppingBackend.repository.UserRoleRepository;
 import za.ac.tut.sfg.OnlineShoppingBackend.service.UserStylistService;
 
 /**
@@ -31,23 +32,19 @@ public class UserStylistServiceImpl implements UserStylistService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private StylistRepository stylistRepository;
+    private UserRoleRepository roleRepository;
 
     @Override
-    public Optional<User> loginUser(String email, String password) {
-        return userRepository.login(email, password);
+    public UserDTO loginUser(String email, String password) throws NoSuchElementException {
+        User optionalUser = userRepository.login(email, password).get();
+        return new UserDTO(optionalUser);
     }
 
     @Override
-    public Optional<Stylist> loginStylist(String email, String password) {
-        return stylistRepository.login(email, password);
-    }
-
-    @Override
-    public Optional<User> createUser(User user) {
-        ExampleMatcher caseInsensitiveExampleMatcher = ExampleMatcher.matchingAll().withIgnoreCase().withIgnoreCase("email");
-        Example<User> example = Example.of(user,
-                caseInsensitiveExampleMatcher);
+    public UserDTO createUser(UserDTO user) {
+//        ExampleMatcher caseInsensitiveExampleMatcher = ExampleMatcher.matchingAll().withIgnoreCase().withIgnoreCase("email");
+//        Example<User> example = Example.of(user,
+//                caseInsensitiveExampleMatcher);
 
         long actual = userRepository.userExist(user.getEmail());
         if (actual > 0) {
@@ -57,87 +54,72 @@ public class UserStylistServiceImpl implements UserStylistService {
 //        UserProfile currentUserProfile = user.getUserProfile();
 //        List<Address> addressSet = addressRepository.saveAll(user.getUserProfile().getAddresses());
 //        currentUserProfile.getAddresses().addAll(addressSet);
-        return Optional.of(user);
+        User current = new User();
+        current.setName(user.getName());
+        current.setSurname(user.getSurname());
+        current.setActiveStatus("online");
+        current.setCell(user.getCell());
+//        current.setDob(new Date(user.getDob()));
+        current.setImageUrl(user.getImageUrl());
+        current.setUserUid(user.getUserUid());
+        current.setPassword(user.getPassword());
+        current.setSurname(user.getSurname());
+        current.setEmail(user.getEmail());
+        current.setSurname(user.getSurname());
+        current.setUserroleId(roleRepository.findById(user.getUserRoleId()).get());
+        current = userRepository.save(current);
+        return Optional.ofNullable(new UserDTO(current)).get();
     }
 
     @Override
-    public Optional<Stylist> createStylist(Stylist stylist) {
-        ExampleMatcher caseInsensitiveExampleMatcher = ExampleMatcher.matchingAll().withIgnoreCase().withIgnoreCase("email");
-        Example<Stylist> example = Example.of(stylist,
-                caseInsensitiveExampleMatcher);
+    public UserDTO getUserById(Integer userId) {
+        return Optional.ofNullable(new UserDTO(userRepository.findById(userId).get())).get();
+    }
 
-        long actual = userRepository.userExist(stylist.getEmail());
-        if (actual > 0) {
-            throw new UserException("User " + stylist.getEmail() + " exists");
-//            actual.orElseThrow(() -> new UserException("User " + user.getEmail() + " exists"));
+    @Override
+    public UserDTO getUserByUid(String userUid) {
+        return Optional.ofNullable(new UserDTO(userRepository.getUserByUid(userUid).get())).get();
+    }
+
+    @Override
+    public List<UserDTO> getActiveStylist(String activeStatus, int userroleId) {
+        List<UserDTO> response = new ArrayList<>();
+        Optional<List<User>> activeStylists = Optional.ofNullable(getActiveStylists(activeStatus, userroleId));
+//        Optional<List<User>> users = 
+        for (User u : activeStylists.get()) {
+            response.add(new UserDTO(u));
         }
 
-//        UserProfile currentUserProfile = user.getUserProfile();
-//        List<Address> addressSet = addressRepository.saveAll(user.getUserProfile().getAddresses());
-//        currentUserProfile.getAddresses().addAll(addressSet);
-        return Optional.of(stylist);
+        return Optional.ofNullable(response).get();
     }
 
-    @Override
-    public Optional<Stylist> getStylistById(Integer stylistId) {
-        return stylistRepository.findById(stylistId);
-    }
-
-    @Override
-    public Optional<User> getUserById(Integer userId) {
-        return userRepository.findById(userId);
-    }
-
-    @Override
-    public Optional<Stylist> getStylistByUid(String stylistUid) {
-        return stylistRepository.getStylistByUid(stylistUid);
-    }
-
-    @Override
-    public Optional<?> getUserByUid(String userUid) {
-        return userRepository.getUserByUid(userUid);
-    }
-
-    @Override
-    public Optional<List<Stylist>> getActiveStylist(String status) {
-        return stylistRepository.findStylistByActiveStatus(status);
+    private List<User> getActiveStylists(String activeStatus, int userroleId) {
+        return userRepository.findStylistByActiveStatus(activeStatus, userroleId).get();
     }
 
     @Transactional
     @Override
-    public Optional<User> updateUser(User user) {
+    public UserDTO updateUser(UserDTO user) {
 
         return userRepository.findById(user.getId()).map(current -> {
             current.setName(user.getName());
             current.setSurname(user.getSurname());
             current.setActiveStatus(user.getActiveStatus());
             current.setCell(user.getCell());
-            current.setDob(user.getDob());
+            current.setDob(new Date(user.getDob()));
             current.setImageUrl(user.getImageUrl());
             current.setUserUid(user.getUserUid());
             current.setPassword(user.getPassword());
             current.setSurname(user.getSurname());
+            current.setUserroleId(roleRepository.findById(user.getUserRoleId()).get());
+//            current.setAddresses(user.getAddresses());
 
-            return Optional.of(current);
-        }).orElseThrow(() -> new UserException("User " + user.getEmail() + " does not exists"));
+            return Optional.ofNullable(new UserDTO(current));
+        }).orElseThrow(() -> new UserException("User " + user.getEmail() + " does not exists")).get();
     }
 
-    @Transactional
     @Override
-    public Optional<Stylist> updateStylist(Stylist stylist) {
-        return stylistRepository.findById(stylist.getId()).map(current -> {
-            current.setName(stylist.getName());
-            current.setSurname(stylist.getSurname());
-            current.setActiveStatus(stylist.getActiveStatus());
-            current.setCell(stylist.getCell());
-            current.setDob(stylist.getDob());
-            current.setImageUrl(stylist.getImageUrl());
-            current.setStylistUid(stylist.getStylistUid());
-            current.setPassword(stylist.getPassword());
-            current.setSurname(stylist.getSurname());
-
-            return Optional.of(current);
-        }).orElseThrow(() -> new UserException("User " + stylist.getEmail() + " does not exists"));
+    public UserRoleDTO getUserRole(Integer userRoleId) {
+        return new UserRoleDTO(roleRepository.findById(userRoleId).get());
     }
-
 }

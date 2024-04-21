@@ -7,9 +7,6 @@ package za.ac.tut.sfg.OnlineShoppingBackend.model;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
@@ -26,7 +23,12 @@ import java.io.Serializable;
 @Entity
 @Table(name = "chat")
 @NamedQueries({
-    @NamedQuery(name = "Chat.findAll", query = "SELECT c FROM Chat c")})
+    @NamedQuery(name = "Chat.findAll", query = "SELECT c FROM Chat c"),
+    @NamedQuery(name = "Chat.findBySenderUid", query = "SELECT c FROM Chat c WHERE c.senderUid = :senderUid"),
+    @NamedQuery(name = "Chat.findByReceiverUid", query = "SELECT c FROM Chat c WHERE c.receiverUid = :receiverUid"),
+    @NamedQuery(name = "Chat.findByType", query = "SELECT c FROM Chat c WHERE c.type = :type"),
+    @NamedQuery(name = "Chat.findByTimestamp", query = "SELECT c FROM Chat c WHERE c.timestamp = :timestamp"),
+    @NamedQuery(name = "Chat.findByChatId", query = "SELECT c FROM Chat c WHERE c.chatId = :chatId")})
 public class Chat implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,16 +47,15 @@ public class Chat implements Serializable {
     @Column(name = "timestamp")
     private String timestamp;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "chatId")
     private Integer chatId;
-    @JoinColumn(name = "stylist_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Stylist stylist;
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User user;
+    @Lob
+    @Column(name = "image_url")
+    private String imageUrl;
+    @JoinColumn(name = "chatList_id", referencedColumnName = "id")
+    @ManyToOne
+    private Chatlist chatListid;
 
     public Chat() {
     }
@@ -118,20 +119,20 @@ public class Chat implements Serializable {
         this.chatId = chatId;
     }
 
-    public Stylist getStylist() {
-        return stylist;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setStylist(Stylist stylist) {
-        this.stylist = stylist;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public User getUser() {
-        return user;
+    public Chatlist getChatListid() {
+        return chatListid;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setChatListid(Chatlist chatListid) {
+        this.chatListid = chatListid;
     }
 
     @Override

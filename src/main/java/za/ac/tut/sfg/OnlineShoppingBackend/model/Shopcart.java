@@ -5,16 +5,18 @@
 package za.ac.tut.sfg.OnlineShoppingBackend.model;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -23,86 +25,141 @@ import java.io.Serializable;
 @Entity
 @Table(name = "shopcart")
 @NamedQueries({
-    @NamedQuery(name = "Shopcart.findAll", query = "SELECT s FROM Shopcart s")})
+    @NamedQuery(name = "Shopcart.findAll", query = "SELECT s FROM Shopcart s"),
+    @NamedQuery(name = "Shopcart.findById", query = "SELECT s FROM Shopcart s WHERE s.id = :id"),
+    @NamedQuery(name = "Shopcart.findByTotalAmout", query = "SELECT s FROM Shopcart s WHERE s.totalAmout = :totalAmout"),
+    @NamedQuery(name = "Shopcart.findByDiscount", query = "SELECT s FROM Shopcart s WHERE s.discount = :discount"),
+    @NamedQuery(name = "Shopcart.findByStylistUid", query = "SELECT s FROM Shopcart s WHERE s.stylistUid = :stylistUid"),
+    @NamedQuery(name = "Shopcart.findByUserUid", query = "SELECT s FROM Shopcart s WHERE s.userUid = :userUid"),
+    @NamedQuery(name = "Shopcart.findByOrderStatusId", query = "SELECT s FROM Shopcart s WHERE s.orderStatusId = :orderStatusId"),
+    @NamedQuery(name = "Shopcart.findByOrderId", query = "SELECT s FROM Shopcart s WHERE s.orderId = :orderId"),
+    @NamedQuery(name = "Shopcart.findByOrderDate", query = "SELECT s FROM Shopcart s WHERE s.orderDate = :orderDate")})
 public class Shopcart implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected ShopcartPK shopcartPK;
+    @Id
     @Basic(optional = false)
-    @Column(name = "TotalAmout")
-    private long totalAmout;
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
-    @Column(name = "totalCartItems")
-    private int totalCartItems;
-    @JoinColumn(name = "stylist_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Stylist stylist;
-    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User user;
+    @Column(name = "total_amout")
+    private double totalAmout;
+    @Basic(optional = false)
+    @Column(name = "discount")
+    private double discount;
+    @Column(name = "stylist_uid")
+    private String stylistUid;
+    @Column(name = "user_uid")
+    private String userUid;
+    @Column(name = "order_status_id")
+    private Integer orderStatusId;
+    @Column(name = "order_id")
+    private String orderId;
+    @Column(name = "order_date")
+    private String orderDate;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shopcartId")
+    private List<Shopcartitem> shopcartitemList;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private User userId;
 
     public Shopcart() {
     }
 
-    public Shopcart(ShopcartPK shopcartPK) {
-        this.shopcartPK = shopcartPK;
+    public Shopcart(Integer id) {
+        this.id = id;
     }
 
-    public Shopcart(ShopcartPK shopcartPK, long totalAmout, int totalCartItems) {
-        this.shopcartPK = shopcartPK;
+    public Shopcart(Integer id, double totalAmout, double discount) {
+        this.id = id;
         this.totalAmout = totalAmout;
-        this.totalCartItems = totalCartItems;
+        this.discount = discount;
     }
 
-    public Shopcart(int id, int userId) {
-        this.shopcartPK = new ShopcartPK(id, userId);
+    public Integer getId() {
+        return id;
     }
 
-    public ShopcartPK getShopcartPK() {
-        return shopcartPK;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setShopcartPK(ShopcartPK shopcartPK) {
-        this.shopcartPK = shopcartPK;
-    }
-
-    public long getTotalAmout() {
+    public double getTotalAmout() {
         return totalAmout;
     }
 
-    public void setTotalAmout(long totalAmout) {
+    public void setTotalAmout(double totalAmout) {
         this.totalAmout = totalAmout;
     }
 
-    public int getTotalCartItems() {
-        return totalCartItems;
+    public double getDiscount() {
+        return discount;
     }
 
-    public void setTotalCartItems(int totalCartItems) {
-        this.totalCartItems = totalCartItems;
+    public void setDiscount(double discount) {
+        this.discount = discount;
     }
 
-    public Stylist getStylist() {
-        return stylist;
+    public String getStylistUid() {
+        return stylistUid;
     }
 
-    public void setStylist(Stylist stylist) {
-        this.stylist = stylist;
+    public void setStylistUid(String stylistUid) {
+        this.stylistUid = stylistUid;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserUid() {
+        return userUid;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
+    }
+
+    public Integer getOrderStatusId() {
+        return orderStatusId;
+    }
+
+    public void setOrderStatusId(Integer orderStatusId) {
+        this.orderStatusId = orderStatusId;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public List<Shopcartitem> getShopcartitemList() {
+        return shopcartitemList;
+    }
+
+    public void setShopcartitemList(List<Shopcartitem> shopcartitemList) {
+        this.shopcartitemList = shopcartitemList;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (shopcartPK != null ? shopcartPK.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -113,7 +170,7 @@ public class Shopcart implements Serializable {
             return false;
         }
         Shopcart other = (Shopcart) object;
-        if ((this.shopcartPK == null && other.shopcartPK != null) || (this.shopcartPK != null && !this.shopcartPK.equals(other.shopcartPK))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -121,7 +178,7 @@ public class Shopcart implements Serializable {
 
     @Override
     public String toString() {
-        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Shopcart[ shopcartPK=" + shopcartPK + " ]";
+        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Shopcart[ id=" + id + " ]";
     }
     
 }

@@ -6,11 +6,11 @@ package za.ac.tut.sfg.OnlineShoppingBackend.model;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
@@ -25,52 +25,57 @@ import java.io.Serializable;
 @Entity
 @Table(name = "shopcartitem")
 @NamedQueries({
-    @NamedQuery(name = "Shopcartitem.findAll", query = "SELECT s FROM Shopcartitem s")})
+    @NamedQuery(name = "Shopcartitem.findAll", query = "SELECT s FROM Shopcartitem s"),
+    @NamedQuery(name = "Shopcartitem.findById", query = "SELECT s FROM Shopcartitem s WHERE s.id = :id"),
+    @NamedQuery(name = "Shopcartitem.findByHistory", query = "SELECT s FROM Shopcartitem s WHERE s.history = :history"),
+    @NamedQuery(name = "Shopcartitem.findByOrderItemStatus", query = "SELECT s FROM Shopcartitem s WHERE s.orderItemStatus = :orderItemStatus"),
+    @NamedQuery(name = "Shopcartitem.findByOrderId", query = "SELECT s FROM Shopcartitem s WHERE s.orderId = :orderId")})
 public class Shopcartitem implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected ShopcartitemPK shopcartitemPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
     @Lob
     @Column(name = "quantity")
     private String quantity;
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Product product;
-    @JoinColumns({
-        @JoinColumn(name = "productcolor_id", referencedColumnName = "id", insertable = false, updatable = false),
-        @JoinColumn(name = "productcolor_product_id", referencedColumnName = "product_id", insertable = false, updatable = false)})
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Productcolor productcolor;
-    @JoinColumns({
-        @JoinColumn(name = "productsize_id", referencedColumnName = "id", insertable = false, updatable = false),
-        @JoinColumn(name = "productsize_product_id", referencedColumnName = "product_id", insertable = false, updatable = false)})
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Productsize productsize;
+    @Lob
+    @Column(name = "comments")
+    private String comments;
+    @Column(name = "history")
+    private Integer history;
+    @Column(name = "order_item_status")
+    private Integer orderItemStatus;
+    @Column(name = "order_id")
+    private String orderId;
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    @ManyToOne
+    private Product productId;
+    @JoinColumn(name = "shopcart_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Shopcart shopcartId;
 
     public Shopcartitem() {
     }
 
-    public Shopcartitem(ShopcartitemPK shopcartitemPK) {
-        this.shopcartitemPK = shopcartitemPK;
+    public Shopcartitem(Integer id) {
+        this.id = id;
     }
 
-    public Shopcartitem(ShopcartitemPK shopcartitemPK, String quantity) {
-        this.shopcartitemPK = shopcartitemPK;
+    public Shopcartitem(Integer id, String quantity) {
+        this.id = id;
         this.quantity = quantity;
     }
 
-    public Shopcartitem(int id, int productcolorId, int productcolorProductId, int productsizeId, int productsizeProductId) {
-        this.shopcartitemPK = new ShopcartitemPK(id, productcolorId, productcolorProductId, productsizeId, productsizeProductId);
+    public Integer getId() {
+        return id;
     }
 
-    public ShopcartitemPK getShopcartitemPK() {
-        return shopcartitemPK;
-    }
-
-    public void setShopcartitemPK(ShopcartitemPK shopcartitemPK) {
-        this.shopcartitemPK = shopcartitemPK;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getQuantity() {
@@ -81,34 +86,58 @@ public class Shopcartitem implements Serializable {
         this.quantity = quantity;
     }
 
-    public Product getProduct() {
-        return product;
+    public String getComments() {
+        return comments;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
-    public Productcolor getProductcolor() {
-        return productcolor;
+    public Integer getHistory() {
+        return history;
     }
 
-    public void setProductcolor(Productcolor productcolor) {
-        this.productcolor = productcolor;
+    public void setHistory(Integer history) {
+        this.history = history;
     }
 
-    public Productsize getProductsize() {
-        return productsize;
+    public Integer getOrderItemStatus() {
+        return orderItemStatus;
     }
 
-    public void setProductsize(Productsize productsize) {
-        this.productsize = productsize;
+    public void setOrderItemStatus(Integer orderItemStatus) {
+        this.orderItemStatus = orderItemStatus;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public Product getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Product productId) {
+        this.productId = productId;
+    }
+
+    public Shopcart getShopcartId() {
+        return shopcartId;
+    }
+
+    public void setShopcartId(Shopcart shopcartId) {
+        this.shopcartId = shopcartId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (shopcartitemPK != null ? shopcartitemPK.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -119,7 +148,7 @@ public class Shopcartitem implements Serializable {
             return false;
         }
         Shopcartitem other = (Shopcartitem) object;
-        if ((this.shopcartitemPK == null && other.shopcartitemPK != null) || (this.shopcartitemPK != null && !this.shopcartitemPK.equals(other.shopcartitemPK))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -127,7 +156,7 @@ public class Shopcartitem implements Serializable {
 
     @Override
     public String toString() {
-        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Shopcartitem[ shopcartitemPK=" + shopcartitemPK + " ]";
+        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Shopcartitem[ id=" + id + " ]";
     }
     
 }

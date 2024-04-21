@@ -4,10 +4,12 @@
  */
 package za.ac.tut.sfg.OnlineShoppingBackend.model;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
@@ -22,12 +24,25 @@ import java.io.Serializable;
 @Entity
 @Table(name = "address")
 @NamedQueries({
-    @NamedQuery(name = "Address.findAll", query = "SELECT a FROM Address a")})
+    @NamedQuery(name = "Address.findAll", query = "SELECT a FROM Address a"),
+    @NamedQuery(name = "Address.findByAddressId", query = "SELECT a FROM Address a WHERE a.addressId = :addressId"),
+    @NamedQuery(name = "Address.findByAddressLine1", query = "SELECT a FROM Address a WHERE a.addressLine1 = :addressLine1"),
+    @NamedQuery(name = "Address.findByAddressLine2", query = "SELECT a FROM Address a WHERE a.addressLine2 = :addressLine2"),
+    @NamedQuery(name = "Address.findByCity", query = "SELECT a FROM Address a WHERE a.city = :city"),
+    @NamedQuery(name = "Address.findByState", query = "SELECT a FROM Address a WHERE a.state = :state"),
+    @NamedQuery(name = "Address.findByCountry", query = "SELECT a FROM Address a WHERE a.country = :country"),
+    @NamedQuery(name = "Address.findByZipCode", query = "SELECT a FROM Address a WHERE a.zipCode = :zipCode"),
+    @NamedQuery(name = "Address.findByActive", query = "SELECT a FROM Address a WHERE a.active = :active"),
+    @NamedQuery(name = "Address.findByLatitude", query = "SELECT a FROM Address a WHERE a.latitude = :latitude"),
+    @NamedQuery(name = "Address.findByLongitude", query = "SELECT a FROM Address a WHERE a.longitude = :longitude")})
 public class Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected AddressPK addressPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "addressId")
+    private Integer addressId;
     @Column(name = "addressLine1")
     private String addressLine1;
     @Column(name = "addressLine2")
@@ -47,30 +62,23 @@ public class Address implements Serializable {
     private Double latitude;
     @Column(name = "longitude")
     private Double longitude;
-    @JoinColumn(name = "stylist_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Stylist stylist;
-    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User user;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne
+    private User userId;
 
     public Address() {
     }
 
-    public Address(AddressPK addressPK) {
-        this.addressPK = addressPK;
+    public Address(Integer addressId) {
+        this.addressId = addressId;
     }
 
-    public Address(int addressId, int userId) {
-        this.addressPK = new AddressPK(addressId, userId);
+    public Integer getAddressId() {
+        return addressId;
     }
 
-    public AddressPK getAddressPK() {
-        return addressPK;
-    }
-
-    public void setAddressPK(AddressPK addressPK) {
-        this.addressPK = addressPK;
+    public void setAddressId(Integer addressId) {
+        this.addressId = addressId;
     }
 
     public String getAddressLine1() {
@@ -145,26 +153,18 @@ public class Address implements Serializable {
         this.longitude = longitude;
     }
 
-    public Stylist getStylist() {
-        return stylist;
+    public User getUserId() {
+        return userId;
     }
 
-    public void setStylist(Stylist stylist) {
-        this.stylist = stylist;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(User userId) {
+        this.userId = userId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (addressPK != null ? addressPK.hashCode() : 0);
+        hash += (addressId != null ? addressId.hashCode() : 0);
         return hash;
     }
 
@@ -175,7 +175,7 @@ public class Address implements Serializable {
             return false;
         }
         Address other = (Address) object;
-        if ((this.addressPK == null && other.addressPK != null) || (this.addressPK != null && !this.addressPK.equals(other.addressPK))) {
+        if ((this.addressId == null && other.addressId != null) || (this.addressId != null && !this.addressId.equals(other.addressId))) {
             return false;
         }
         return true;
@@ -183,7 +183,7 @@ public class Address implements Serializable {
 
     @Override
     public String toString() {
-        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Address[ addressPK=" + addressPK + " ]";
+        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Address[ addressId=" + addressId + " ]";
     }
     
 }

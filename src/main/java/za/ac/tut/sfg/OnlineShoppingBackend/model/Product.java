@@ -5,14 +5,14 @@
 package za.ac.tut.sfg.OnlineShoppingBackend.model;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -27,61 +27,66 @@ import java.util.List;
 @Entity
 @Table(name = "product")
 @NamedQueries({
-    @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p")})
+    @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p"),
+    @NamedQuery(name = "Product.findByProductId", query = "SELECT p FROM Product p WHERE p.productId = :productId"),
+    @NamedQuery(name = "Product.findById", query = "SELECT p FROM Product p WHERE p.id = :id"),
+    @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name"),
+    @NamedQuery(name = "Product.findByPrice", query = "SELECT p FROM Product p WHERE p.price = :price")})
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "product_id")
+    private Integer productId;
+    @Basic(optional = false)
     @Column(name = "id")
-    private Integer id;
+    private int id;
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @Basic(optional = false)
     @Lob
     @Column(name = "description")
     private String description;
     @Basic(optional = false)
-    @Column(name = "skuCode")
-    private String skuCode;
-    @Basic(optional = false)
     @Column(name = "price")
     private double price;
-    @Basic(optional = false)
-    @Column(name = "vat")
-    private double vat;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", referencedColumnName = "categoryid")
+    @ManyToOne
+    private Category categoryId;
+    @OneToMany(mappedBy = "productId")
     private List<Shopcartitem> shopcartitemList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productId")
     private List<Productimage> productimageList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
-    private List<Productsize> productsizeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
-    private List<Productcolor> productcolorList;
 
     public Product() {
     }
 
-    public Product(Integer id) {
-        this.id = id;
+    public Product(Integer productId) {
+        this.productId = productId;
     }
 
-    public Product(Integer id, String name, String description, String skuCode, double price, double vat) {
+    public Product(Integer productId, int id, String name, double price) {
+        this.productId = productId;
         this.id = id;
         this.name = name;
-        this.description = description;
-        this.skuCode = skuCode;
         this.price = price;
-        this.vat = vat;
     }
 
-    public Integer getId() {
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -101,14 +106,6 @@ public class Product implements Serializable {
         this.description = description;
     }
 
-    public String getSkuCode() {
-        return skuCode;
-    }
-
-    public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode;
-    }
-
     public double getPrice() {
         return price;
     }
@@ -117,12 +114,12 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    public double getVat() {
-        return vat;
+    public Category getCategoryId() {
+        return categoryId;
     }
 
-    public void setVat(double vat) {
-        this.vat = vat;
+    public void setCategoryId(Category categoryId) {
+        this.categoryId = categoryId;
     }
 
     public List<Shopcartitem> getShopcartitemList() {
@@ -141,26 +138,10 @@ public class Product implements Serializable {
         this.productimageList = productimageList;
     }
 
-    public List<Productsize> getProductsizeList() {
-        return productsizeList;
-    }
-
-    public void setProductsizeList(List<Productsize> productsizeList) {
-        this.productsizeList = productsizeList;
-    }
-
-    public List<Productcolor> getProductcolorList() {
-        return productcolorList;
-    }
-
-    public void setProductcolorList(List<Productcolor> productcolorList) {
-        this.productcolorList = productcolorList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (productId != null ? productId.hashCode() : 0);
         return hash;
     }
 
@@ -171,7 +152,7 @@ public class Product implements Serializable {
             return false;
         }
         Product other = (Product) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.productId == null && other.productId != null) || (this.productId != null && !this.productId.equals(other.productId))) {
             return false;
         }
         return true;
@@ -179,7 +160,7 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Product[ id=" + id + " ]";
+        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Product[ productId=" + productId + " ]";
     }
     
 }

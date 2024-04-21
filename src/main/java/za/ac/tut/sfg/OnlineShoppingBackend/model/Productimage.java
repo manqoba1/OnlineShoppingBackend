@@ -6,10 +6,12 @@ package za.ac.tut.sfg.OnlineShoppingBackend.model;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -23,57 +25,39 @@ import java.io.Serializable;
 @Entity
 @Table(name = "productimage")
 @NamedQueries({
-    @NamedQuery(name = "Productimage.findAll", query = "SELECT p FROM Productimage p")})
+    @NamedQuery(name = "Productimage.findAll", query = "SELECT p FROM Productimage p"),
+    @NamedQuery(name = "Productimage.findById", query = "SELECT p FROM Productimage p WHERE p.id = :id")})
 public class Productimage implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected ProductimagePK productimagePK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "name")
-    private String name;
-    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
+    @Lob
     @Column(name = "url_full")
     private String urlFull;
-    @Basic(optional = false)
+    @Lob
     @Column(name = "url_thump")
     private String urlThump;
-    @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Product product;
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    @ManyToOne
+    private Product productId;
 
     public Productimage() {
     }
 
-    public Productimage(ProductimagePK productimagePK) {
-        this.productimagePK = productimagePK;
+    public Productimage(Integer id) {
+        this.id = id;
     }
 
-    public Productimage(ProductimagePK productimagePK, String name, String urlFull, String urlThump) {
-        this.productimagePK = productimagePK;
-        this.name = name;
-        this.urlFull = urlFull;
-        this.urlThump = urlThump;
+    public Integer getId() {
+        return id;
     }
 
-    public Productimage(int id, int productId) {
-        this.productimagePK = new ProductimagePK(id, productId);
-    }
-
-    public ProductimagePK getProductimagePK() {
-        return productimagePK;
-    }
-
-    public void setProductimagePK(ProductimagePK productimagePK) {
-        this.productimagePK = productimagePK;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getUrlFull() {
@@ -92,18 +76,18 @@ public class Productimage implements Serializable {
         this.urlThump = urlThump;
     }
 
-    public Product getProduct() {
-        return product;
+    public Product getProductId() {
+        return productId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(Product productId) {
+        this.productId = productId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (productimagePK != null ? productimagePK.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -114,7 +98,7 @@ public class Productimage implements Serializable {
             return false;
         }
         Productimage other = (Productimage) object;
-        if ((this.productimagePK == null && other.productimagePK != null) || (this.productimagePK != null && !this.productimagePK.equals(other.productimagePK))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -122,7 +106,7 @@ public class Productimage implements Serializable {
 
     @Override
     public String toString() {
-        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Productimage[ productimagePK=" + productimagePK + " ]";
+        return "za.ac.tut.sfg.OnlineShoppingBackend.model.Productimage[ id=" + id + " ]";
     }
     
 }

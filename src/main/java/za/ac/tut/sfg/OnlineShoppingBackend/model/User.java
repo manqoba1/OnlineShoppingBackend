@@ -8,11 +8,12 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -30,7 +31,15 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @NamedQueries({
-    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")})
+    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
+    @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
+    @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name"),
+    @NamedQuery(name = "User.findBySurname", query = "SELECT u FROM User u WHERE u.surname = :surname"),
+    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
+    @NamedQuery(name = "User.findByCell", query = "SELECT u FROM User u WHERE u.cell = :cell"),
+    @NamedQuery(name = "User.findByDob", query = "SELECT u FROM User u WHERE u.dob = :dob"),
+    @NamedQuery(name = "User.findByUserUid", query = "SELECT u FROM User u WHERE u.userUid = :userUid"),
+    @NamedQuery(name = "User.findByActiveStatus", query = "SELECT u FROM User u WHERE u.activeStatus = :activeStatus")})
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,20 +51,17 @@ public class User implements Serializable {
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
-    @Basic(optional = false)
     @Column(name = "surname")
     private String surname;
     @Basic(optional = false)
     @Column(name = "email")
     private String email;
-    @Basic(optional = false)
     @Column(name = "cell")
     private String cell;
-    @Basic(optional = false)
     @Column(name = "dob")
     @Temporal(TemporalType.DATE)
     private Date dob;
-    @Basic(optional = false)
+    @Lob
     @Column(name = "image_url")
     private String imageUrl;
     @Basic(optional = false)
@@ -66,14 +72,15 @@ public class User implements Serializable {
     private String userUid;
     @Column(name = "active_status")
     private String activeStatus;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Chatlist> chatlistList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userId")
     private List<Address> addressList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private List<Shopcart> shopcartList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Chat> chatList;
+    @JoinColumn(name = "userrole_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Userrole userroleId;
+    @OneToMany(mappedBy = "userId")
+    private List<ChatlistHasUser> chatlistHasUserList;
 
     public User() {
     }
@@ -82,14 +89,10 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Integer id, String name, String surname, String email, String cell, Date dob, String imageUrl, String password) {
+    public User(Integer id, String name, String email, String password) {
         this.id = id;
         this.name = name;
-        this.surname = surname;
         this.email = email;
-        this.cell = cell;
-        this.dob = dob;
-        this.imageUrl = imageUrl;
         this.password = password;
     }
 
@@ -173,14 +176,6 @@ public class User implements Serializable {
         this.activeStatus = activeStatus;
     }
 
-    public List<Chatlist> getChatlistList() {
-        return chatlistList;
-    }
-
-    public void setChatlistList(List<Chatlist> chatlistList) {
-        this.chatlistList = chatlistList;
-    }
-
     public List<Address> getAddressList() {
         return addressList;
     }
@@ -197,12 +192,20 @@ public class User implements Serializable {
         this.shopcartList = shopcartList;
     }
 
-    public List<Chat> getChatList() {
-        return chatList;
+    public Userrole getUserroleId() {
+        return userroleId;
     }
 
-    public void setChatList(List<Chat> chatList) {
-        this.chatList = chatList;
+    public void setUserroleId(Userrole userroleId) {
+        this.userroleId = userroleId;
+    }
+
+    public List<ChatlistHasUser> getChatlistHasUserList() {
+        return chatlistHasUserList;
+    }
+
+    public void setChatlistHasUserList(List<ChatlistHasUser> chatlistHasUserList) {
+        this.chatlistHasUserList = chatlistHasUserList;
     }
 
     @Override
